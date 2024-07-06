@@ -1,8 +1,10 @@
-# AIRADA
+# siou/airada
 
-**AIRADA** — **A**IRADA **I**s **R**ecord **A**nd **D**ocument **A**ssembler. 
+**airada** — **a**irada **i**s **r**ecord **a**nd **d**ocument **a**ssembler. 
 
-**ไอรดา** คือ โปรแกรมาสำหรับแปลงข้อมูล JSON ที่ได้รับจากเว็บ [samoHub](localhost) เป็นไฟล์ `.docx` และ `.pdf` เพื่ออำนวยความสะดวกเบื่องต้นให้กับผู้เริ่มต้นเขียนโครงการ
+**airada (ไอรดา)** คือ โปรแกรมาสำหรับแปลงข้อมูล JSON ที่ได้รับจากเว็บ [samoHub](localhost) เป็นไฟล์ `.docx` เพื่ออำนวยความสะดวกเบื่องต้นให้กับผู้เริ่มต้นเขียนโครงการและเอกสารอื่น ๆ ของสโม ฯ ในอนาคต
+
+airada เป็นส่วนหนึ่งของโครงการ siou (samoIT Open Utilities) — ผู้ที่สนใจสามารถ contribute โค้ดให้กับ airada ได้โดยการเปิด pull request
 
 ## แผนการดำเนินงาน
 
