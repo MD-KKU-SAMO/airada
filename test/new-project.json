@@ -1,0 +1,220 @@
+{
+    "mode": "project",
+    "projectName": "ชื่อโครงการ",
+    "rationals": [ 
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin condimentum suscipit elementum. Nulla ac nibh sit amet nibh varius viverra. Pellentesque dapibus metus sed euismod congue. Etiam aliquet felis vitae nulla laoreet blandit. Etiam vel dui congue, vulputate neque nec, mollis diam. Quisque scelerisque velit eu nunc sollicitudin, et euismod tortor viverra. Nunc id erat libero. Maecenas iaculis tempus tincidunt. Maecenas ut ipsum quis enim pellentesque consequat. Donec vehicula velit eu ipsum eleifend, sit amet posuere justo feugiat. Curabitur ac elit at odio luctus commodo. Integer pharetra congue justo, id commodo urna mollis at. Etiam at risus sagittis, dignissim ex et, mollis ipsum."
+    ],
+    "objectives": [
+        "In viverra velit vel ultricies fringilla. Nulla nec consequat sapien. Ut sit amet justo lacus. Cras ac elit risus. Nullam in urna tristique nisl vestibulum consequat ornare et justo. Aliquam lacinia nunc ut dui vestibulum fermentum. Vestibulum blandit risus non augue vehicula lobortis. Nunc ullamcorper quam id ante tempus, ut tempor diam laoreet. Pellentesque laoreet elit ut lectus congue pretium. Ut molestie mi ac nisi molestie viverra.",
+        "Vivamus tincidunt tristique arcu at bibendum. Vivamus lacinia, nisi at finibus mattis, ligula est consectetur augue, et rutrum sapien arcu sed augue. Cras congue dui id dictum rhoncus. Quisque sapien mauris, suscipit sed sem ut, fringilla vehicula dolor. Etiam scelerisque metus eget ex blandit, porttitor mattis ante aliquam. Nam at ex enim. Praesent in fringilla arcu. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec vel sem sollicitudin, imperdiet tortor eget, porta nibh. Duis at dolor libero. Nulla et laoreet eros. In ultricies justo eu augue imperdiet, quis tempus dolor ultrices."
+    ],
+    "managers": {
+        "students": [
+            {
+                "name": "แมวศักดิ์ ดักเป็ด",
+                "id": "633079900-1",
+                "role": "ประทานโครงการ"
+            },
+            {
+                "name": "เป็ดศักดิ์ ดักปลา",
+                "id": "633079901-2",
+                "role": "รองประทานโครงการ"
+            },
+            {
+                "name": "ปลาศักดิ์ ดักหอย",
+                "id": "633079902-3",
+                "role": "เหรัญญิก"
+            }
+        ],
+        "studentCousil": {
+            "name": "หอยศักดิ์ ดักหมึก",
+            "role": "อุปนายกสโมสรนักศึกษาฝ่ายกลาง"
+        },
+        "contentAdvisor": "รองศาสตราจารย์ หมึกศักดิ์ ดักกุ้ง",
+        "technicalAdvisor": "อาจารย์ กุ้งศักดิ์ ดักปู"
+    },
+    "nTargets": {
+        "professor": 3,
+        "staff": 2,
+        "student": 5,
+        "external": 3
+    },
+    "location": [
+        "ทะเลอ่าวไทย อำเภอสัตตาหับ จังหวัดระยอง"
+    ],
+    "period": {
+        "start": "2024-10-21",
+        "end": "2025-5-25" 
+    },
+    "steps": [
+        { 
+            "step": "กินปลา",
+            "startDate": "2024-10-2",
+            "endDate": "2024-10-5",
+            "manager": "แมวศักดิ์"
+        },
+        {
+            "step": "กินแมว",
+            "startDate": "2024-10-5",
+            "endDate": "2024-10-8",
+            "manager": "เป็ดศักดิ์"
+        },
+    ],
+    "programmes": { 
+        "start": "2025-10-20",
+        "end": "2025-10-21",
+        "location": "ทะเลอ่าวไทย",
+        "2025-10-20": [
+            {
+                "activity": "Act 1",
+                "startTime": "16:00",
+                "endTime": "17:00"
+            },
+            {
+                "activity": "Act 2",
+                "startTime": "17:00",
+                "endTime": "17:00"
+            }
+        ],
+        "2025-10-21": [
+            {
+                "activity": "Act 3",
+                "start": "8:00",
+                "end": "10:00"
+            }
+        ]
+    },
+    "budgets": [
+        {
+            "item": "item 1",
+            "price": 210
+        },
+        {
+            "item": "item 2",
+            "price": 500
+        }
+    ],
+    "ratingForm": "link to form",
+    "consequences": [
+        {
+            "OKR": "KR1 O1",
+            "KPI": "เป้าหมายของ KR 1"
+        },
+        {
+            "OKR": "KR2 O1",
+            "KPI": "เป้าหมายของ KR 2"
+        }
+    ],
+    "activityCredits": [ 
+        {
+            "organizer": false,
+            "participant": true
+        },
+        { 
+            "organizer": true,
+            "participant": false
+        },
+        {
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": false
+        },
+        {
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": true,
+            "participant": true
+        },
+        {
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": false
+        },
+        {
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": true,
+            "participant": false
+        },
+        {
+            "organizer": false,
+            "participant": true
+        },
+        { 
+            "organizer": false,
+            "participant": false
+        },
+        {
+            "organizer": true,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": false
+        },
+        {
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": true
+        }
+    ],
+    "skillCredits": [
+        { 
+            "organizer": false,
+            "participant": true
+        },
+        { 
+            "organizer": true,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": true,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": true
+        },
+        { 
+            "organizer": true,
+            "participant": true
+        },
+        { 
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": false
+        },
+        { 
+            "organizer": false,
+            "participant": true
+        },
+        { 
+            "organizer": true,
+            "participant": true
+        }
+    ],
+    "mostExpectedSkill" : { 
+        "organizer": 1, 
+        "participant": 2 
+    } 
+}
