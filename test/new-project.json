@@ -1,6 +1,6 @@
 {
     "mode": "project",
-    "projectName": "ชื่อโครงการ",
+    "projectName": "พาแมวศักดิ์ไปกินปลาที่อ่าวไทย",
     "rationals": [ 
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin condimentum suscipit elementum. Nulla ac nibh sit amet nibh varius viverra. Pellentesque dapibus metus sed euismod congue. Etiam aliquet felis vitae nulla laoreet blandit. Etiam vel dui congue, vulputate neque nec, mollis diam. Quisque scelerisque velit eu nunc sollicitudin, et euismod tortor viverra. Nunc id erat libero. Maecenas iaculis tempus tincidunt. Maecenas ut ipsum quis enim pellentesque consequat. Donec vehicula velit eu ipsum eleifend, sit amet posuere justo feugiat. Curabitur ac elit at odio luctus commodo. Integer pharetra congue justo, id commodo urna mollis at. Etiam at risus sagittis, dignissim ex et, mollis ipsum."
     ],
@@ -44,19 +44,19 @@
     ],
     "period": {
         "start": "2024-10-21",
-        "end": "2025-5-25" 
+        "end": "2025-05-25" 
     },
     "steps": [
         { 
             "step": "กินปลา",
-            "startDate": "2024-10-2",
-            "endDate": "2024-10-5",
+            "startDate": "2024-10-02",
+            "endDate": "2024-10-05",
             "manager": "แมวศักดิ์"
         },
         {
             "step": "กินแมว",
-            "startDate": "2024-10-5",
-            "endDate": "2024-10-8",
+            "startDate": "2024-10-05",
+            "endDate": "2024-10-08",
             "manager": "เป็ดศักดิ์"
         }
     ],
@@ -87,11 +87,15 @@
     "budgets": [
         {
             "item": "item 1",
-            "price": 210
+            "price": "210"
         },
         {
             "item": "item 2",
-            "price": 500
+            "price": "500"
+        },
+        {
+            "item": "item 3",
+            "price": "100.50"
         }
     ],
     "ratingForm": "link to form",
