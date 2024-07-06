@@ -1,7 +1,7 @@
 import json
 import logging
 
-logger = logging.getLogger("airada.testFunctions")
+logger = logging.getLogger("airadaCore/testFunctions")
 
 def fetchData():
     try:
