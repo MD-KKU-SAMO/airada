@@ -7,7 +7,7 @@ def moneySum(e: list[str]) -> str:
 
 def moneyToThai(moneyString: str) -> str:
     if "." not in moneyString:
-        return f"{intToThai(moneyString)}บาทถ้วน"
+        return f"{intToThai(int(moneyString))}บาทถ้วน"
     
     _ = moneyString.split(".")
 
