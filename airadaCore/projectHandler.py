@@ -5,36 +5,65 @@ import python_docx_replace
 
 from airadaCore import utils
 
+ENUMERATED_TOPICS = [
+    "rationale",
+    "objective",
+    "studentManager",
+    "location"
+]
+
+NON_NUMERATED_TOPICS = [
+    "projectName",
+
+    "studentCouncilManager",
+
+    "contentAdvisor",
+    "technicalAdvisor",
+
+    "nProfessor",
+    "nStaff",
+    "nStudent",
+    "nExternal",
+    "nSum",
+
+    "periodStartDate",
+    "periodEndDate",
+
+    "budgetSum",
+    "budgetSumText"
+]
+
 logger = logging.getLogger("airadaCore/projectHandler")
 
-def getBudgetSum(budgets: list[dict]):
+def sumBudget(budgets: list[dict]):
     return utils.moneySum([budget["price"] for budget in budgets])
 
-def wordHandler(document: docx.Document, data: dict):
-    budgetSum = getBudgetSum(data["budgets"])
-    _ = {
-        "projectName": str(data["projectName"]),
+def addSubPlaceholders(s: str, n:int) -> str:
+    return "\n\t".join([f"${{{s} {i}}}" for i in range(n)])
 
-        "nProfessor": str(data["nTargets"]["professor"]),
-        "nStaff": str(data["nTargets"]["staff"]),
-        "nStudent": str(data["nTargets"]["student"]),
-        "nExternal": str(data["nTargets"]["external"]),
-        "nSum": str(sum(data["nTargets"].values())),
+def studentManagerText(_: dict) -> str:
+    return f"{_["name"]}\t{_["id"]}\t{_["role"]}"
 
-        "startDatePeriod": utils.toThaiDate(data["period"]["start"]),
-        "endDatePreroid": utils.toThaiDate(data["period"]["end"]),
+def studentCoucilManagerText(_:dict) -> str:
+    return f"{_["name"]}\t{_["role"]}"
 
-        "sumBudget": str(budgetSum),
-        "sumBudgetText": utils.moneyToThai(budgetSum)
-    }
+def replacePlaceholders(document: docx.Document, data: dict):
+    # Non-numerated placeholders
+    _ = {e: data[e] for e in NON_NUMERATED_TOPICS}
     python_docx_replace.docx_replace(document, **_)
 
+    # Enumerated placeholders
+    for topic in ENUMERATED_TOPICS:
+        _ = {f"{topic} {i}": data[f"{topic}s"][i] for i in range(len(data[f"{topic}s"]))}
+        python_docx_replace.docx_replace(document, **_)
 
-def paragraphHandler(document: docx.Document, data: dict):
-    pass
+def prepareParagraphs(document: docx.Document, data: dict):
+    _ = {f"{e}s": addSubPlaceholders(e, len(data[f"{e}s"])) for e in ENUMERATED_TOPICS}
+    python_docx_replace.docx_replace(document, **_)
             
 
-def tableHandler(document: docx.Document, data: dict):
+def prepareTables(document: docx.Document, data: dict):
+    # TODO
     pass
 
 def handle(data: dict) -> str:
@@ -46,10 +75,22 @@ def handle(data: dict) -> str:
 
     document = docx.Document(f"./output/{docxName}.docx")
 
-    wordHandler(document, data)
-    paragraphHandler(document, data)
-    tableHandler(document, data)
+    prepareParagraphs(document, data)
+    prepareTables(document, data)
 
+    data["budgetSum"] = sumBudget(data["budgets"])
+    data["budgetSumText"] = utils.moneyToThai(data["budgetSum"])
+    data["nSum"] = data["nProfessor"] + data["nStaff"] + data["nStudent"] + data["nExternal"]
+    data["periodStartDate"] = utils.toThaiDate(data["periodStartDate"])
+    data["periodEndDate"] = utils.toThaiDate(data["periodEndDate"])
+
+    data["studentCouncilManager"] = studentCoucilManagerText(data["studentCouncilManager"])
+
+    for i in range(len(data["studentManagers"])):
+        data["studentManagers"][i] = studentManagerText(data["studentManagers"][i])
+
+    replacePlaceholders(document, data)
+    
     document.save(f"./output/{docxName}.docx")
     
     return f"./output/{docxName}.docx"

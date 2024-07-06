@@ -6,8 +6,6 @@ def moneySum(e: list[str]) -> str:
     return str(sum([money.Money(_, "THB") for _ in e]).amount)
 
 def moneyToThai(moneyString: str) -> str:
-    # support up to 2 decimal points
-
     if "." not in moneyString:
         return f"{intToThai(moneyString)}บาทถ้วน"
     
