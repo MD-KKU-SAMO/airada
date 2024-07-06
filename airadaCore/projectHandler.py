@@ -68,12 +68,13 @@ def prepareTables(document: docx.Document, data: dict):
 
 def handle(data: dict) -> str:
     logger.info("Parser activated.")
-    docxName = "outDoc"
+    outputPath = "./output/outDoc.docx"
+    projectPaperTemplatePath = './template-doc/project-paper.docx'
     
     # copy template to output folder
-    docx.Document('./template-doc/project.docx').save(f"./output/{docxName}.docx")
+    docx.Document(projectPaperTemplatePath).save(outputPath)
 
-    document = docx.Document(f"./output/{docxName}.docx")
+    document = docx.Document(outputPath)
 
     prepareParagraphs(document, data)
     prepareTables(document, data)
@@ -91,6 +92,6 @@ def handle(data: dict) -> str:
 
     replacePlaceholders(document, data)
     
-    document.save(f"./output/{docxName}.docx")
+    document.save(outputPath)
     
-    return f"./output/{docxName}.docx"
+    return outputPath
