@@ -24,17 +24,16 @@ def main():
     else:
         logger.info("Successfully fetch JSON string, parsing...")
 
-        if rawData["mode"] == "project":
+        if rawData["mode"] == "project-paper":
             logger.info("Using project mode. Invoking airada.projectHandler...")
-            outputPath = projectHandler.handle(rawData)
-        #     try:
-        #         outputPath = projectHandler.handle(rawData)
-        #     except:
-        #         logger.error(f"Got error signal from airadaCore/projectHandler @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
-        #         errorHandler()
-        #     else:
-        #         logger.info(f"Output file at {outputPath}.")
-        # else:
+            try:
+                outputPath = projectHandler.handle(rawData)
+            except:
+                logger.error(f"Got error signal from airadaCore/projectHandler @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+                errorHandler()
+            else:
+                logger.info(f"Output file at {outputPath}.")
+        else:
             logger.error("UNSUPPORTED MODE DETECTED")
 
 

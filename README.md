@@ -1,5 +1,7 @@
 # siou/airada
 
+![](/doc/mascot-ai-1.png)
+
 **airada** — **a**irada **i**s **r**ecord **a**nd **d**ocument **a**ssembler. 
 
 **airada (ไอรดา)** คือ โปรแกรมาสำหรับแปลงข้อมูล JSON ที่ได้รับจากเว็บ [samoHub](localhost) เป็นไฟล์ `.docx` เพื่ออำนวยความสะดวกเบื่องต้นให้กับผู้เริ่มต้นเขียนโครงการและเอกสารอื่น ๆ ของสโม ฯ ในอนาคต
