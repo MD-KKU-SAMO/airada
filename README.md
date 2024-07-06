@@ -23,14 +23,14 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
 กรุณาดูตัวอย่างใน `test/project-paper.json`
 
 ## Attribution
-### Project
+### Projects
 - [python-docx](https://pypi.org/project/python-docx/) — for `.docx` functionality.
 - [python-docx-replace](https://pypi.org/project/python-docx-replace/) — for implementation of replace functionality
 - [money](https://pypi.org/project/money/) — for safe money management lib.
 - [num-thai](https://pypi.org/project/num-thai/) — for number to Thai text function.
 - [akuma.ai](https://akuma.ai/) — inital art for airada mascot. Will hire actual artist if budget permits.
 
-### Person
+### People
 - **มทินา อัศวเมธาพันธ์** — beta tester and bug-hunter
 
 ## License
