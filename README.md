@@ -23,11 +23,11 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
     "projectName": "ชื่อโครงการ",
     "rationals": [ // 1. หลักการและเหตุผล,
         "Paragraph 1",
-        "Paragraph 2",
+        "Paragraph 2"
     ],
     "objectives": [ // 2. วัตถุประสงค์
         "Paragraph 1",
-        "Paragraph 2",
+        "Paragraph 2"
     ],
     "managers": { // 3. ผู้รับผิดชอบโครงการ
         "students": [
@@ -132,7 +132,7 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
         { // ข้อ 1
                 "organizer": false,
                 "participant": false
-        },
+        }
         // ... ถึงข้อ 10
     },
     "mostExpectedSkill" : { // 14. ทักษะที่...จะได้รับการพัฒนามากที่สุด
