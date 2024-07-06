@@ -28,10 +28,12 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
 - [python-docx-replace](https://pypi.org/project/python-docx-replace/) — for implementation of replace functionality
 - [money](https://pypi.org/project/money/) — for safe money management lib.
 - [num-thai](https://pypi.org/project/num-thai/) — for number to Thai text function.
-- [akuma.ai](https://akuma.ai/) — inital art for airada mascot. Will hire actual artist if budget permits.
 
 ### People
 - **มทินา อัศวเมธาพันธ์** — beta tester and bug-hunter
+
+### Tools
+- [akuma.ai](https://akuma.ai/) — inital art for airada mascot. Will hire actual artist if budget permits.
 
 ## License
 
