@@ -2,7 +2,6 @@
 
 **AIRADA** — **A**IRADA **I**s **R**ecord **A**nd **D**ocument **A**ssembler. 
 
-
 **ไอรดา** คือ โปรแกรมาสำหรับแปลงข้อมูล JSON ที่ได้รับจากเว็บ [samoHub](localhost) เป็นไฟล์ `.docx` และ `.pdf` เพื่ออำนวยความสะดวกเบื่องต้นให้กับผู้เริ่มต้นเขียนโครงการ
 
 ## แผนการดำเนินงาน
@@ -56,20 +55,20 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
         "..."
     ],
     "period": { // 6. ระยะเวลาปฏิบัติงาน
-        "start": "2024-10-21",
-        "end": "2025-5-25" 
+        "startDate": "2024-10-21",
+        "endDate": "2025-5-25" 
     },
     "steps": [ // 7. แผนปฏิบัติงาน
         { // step 1 = array[0]
             "step": "...",
-            "start": "2024-10-2",
-            "end": "2024-10-5",
+            "startDate": "2024-10-2",
+            "endDate": "2024-10-5",
             "manager": "..."
         },
         {
             "step": "...",
-            "start": "...",
-            "end": "...",
+            "startDate": "...",
+            "endDate": "...",
             "manager": "..."
         },
     ],
@@ -80,20 +79,20 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
         "2025-10-20": [
             { //activity 1
                 "activity": "...",
-                "start": "...", // time
-                "end": "...",
+                "startTime": "...", // time
+                "endTime": "...",
             },
             { //activity 2
                 "activity": "...",
-                "start": "...", // time
-                "end": "...",
+                "startTime": "...", // time
+                "endTime": "...",
             },
         ],
         "2025-10-21": [
             { //activity 1
                 "activity": "...",
-                "start": "...", // time
-                "end": "...",
+                "startTime": "...", // time
+                "endTime": "..."
             }
         ]
     },
