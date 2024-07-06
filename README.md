@@ -31,7 +31,7 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
 - [akuma.ai](https://akuma.ai/) — inital art for airada mascot. Will hire actual artist if budget permits.
 
 ### Person
-- - **มทินา อัศวเมธาพันธ์** — beta tester and bug-hunter
+- **มทินา อัศวเมธาพันธ์** — beta tester and bug-hunter
 
 ## License
 
