@@ -20,8 +20,8 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
 
 ```json
 {
-    "projectName": "ชื่อโครงการ",
     "mode": "project",
+    "projectName": "ชื่อโครงการ",
     "rationals": [ // 1. หลักการและเหตุผล,
         "Paragraph 1",
         "Paragraph 2",
