@@ -3,8 +3,7 @@ AIRADA_VERSION = "1.0.0"
 import logging
 import datetime
 
-import airada.projectHandler
-import airada.testUtils
+from airadaCore import projectHandler, testUtils
 
 logger = logging.getLogger("airada")
     
@@ -18,7 +17,7 @@ def main():
     
     # Add fetching code here later
     try: 
-        rawData = airada.testUtils.fetchData()
+        rawData = testUtils.fetchData()
     except:
         logger.error(f"Cannot fetch JSON file @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
         errorHandler()
@@ -28,9 +27,9 @@ def main():
         if rawData["mode"] == "project":
             logger.info("Using project mode. Invoking airada.projectHandler...")
             try:
-                outputPath = airada.projectHandler.handle(rawData)
+                outputPath = projectHandler.handle(rawData)
             except:
-                logger.error(f"Got error signal from airada.projectHandler @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+                logger.error(f"Got error signal from airadaCore/projectHandler @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
                 errorHandler()
             else:
                 logger.info(f"Output file at {outputPath}.")
