@@ -10,9 +10,10 @@ def moneyToThai(moneyString: str) -> str:
         return f"{intToThai(int(moneyString))}บาทถ้วน"
     
     _ = moneyString.split(".")
-
     return f"{intToThai(int(_[0]))}บาท{intToThai(int(_[1]))}สตางค์"
 
+def durationFromDates(start: str, end: str):
+    return f"{(datetime.datetime.fromisoformat(end) - datetime.datetime.fromisoformat(start)).days} วัน"
 
 def intToThai(i: int) -> str:
     num = num_thai.thainumbers.NumThai()

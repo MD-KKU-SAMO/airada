@@ -85,11 +85,11 @@
         },
         {
             "item": "item 2",
-            "price": "500"
+            "price": "124.25"
         },
         {
             "item": "item 3",
-            "price": "100.50"
+            "price": "100"
         }
     ],
     "ratingForm": "link to form",
