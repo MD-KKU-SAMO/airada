@@ -34,7 +34,7 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
 - [num-thai](https://pypi.org/project/num-thai/) — for number to Thai text function.
 
 ### People
-- **มทินา อัศวเมธาพันธ์** — beta tester and bug-hunter
+- **Matina Asawamethaphan** — beta tester and bug-hunter
 
 ### Tools
 - [akuma.ai](https://akuma.ai/) — inital art for airada mascot. Will hire actual artist if budget permits.
@@ -44,6 +44,6 @@ TODO: เพิ่มรายละเอียดการเขียน JSON
 MIT License
 
 ## Author
-- **กฤษฎิ์ ปัจญรัตน์** — inital developer
+- **Krit Patyarath** — inital developer
  
 ในนามของสโมสรนักศึกษา คณะแพทยศาสตร์ มหาวิทยาลัยขอนแก่น ปี 2567
