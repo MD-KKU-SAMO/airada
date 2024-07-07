@@ -5,8 +5,8 @@ import python_docx_replace
 
 from airadaCore import utils
 
-OUTPUT_PATH = "./output/outDoc.docx"
-PROJECT_PAPER_TEMPLATE_PATH = './template-doc/project-paper.docx'
+OUTPUT_PATH = "./output/out.docx"
+PROJECT_PAPER_TEMPLATE_PATH = './template/project-paper.docx'
 
 STEP_TABLE_INDEX = 1
 BUDGET_TABLE_INDEX = 2
