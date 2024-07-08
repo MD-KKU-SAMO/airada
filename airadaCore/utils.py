@@ -2,28 +2,32 @@ from datetime import datetime
 from money import Money
 from num_thai.thainumbers import NumThai
 
-from airadaCore import airadaTypes 
+from airadaCore import airadaTypes
 
-def sum_money(items: list[str]) -> str:
+def get_numbered_list_text(*i: int, text: str) -> str:
+    _number_text = ".".join(map(str, i))
+    return f"{_number_text}. {text}"
+
+def sum_money_str(items: list[airadaTypes.money_str]) -> str:
     _moneyItems: list[Money] = [Money(_, "THB") for _ in items]
     _sum: Money = sum(_moneyItems)
 
     return str(_sum.amount)
 
-def get_thai_money_text(s: airadaTypes.money_str) -> str:
+def get_money_thai_text(s: airadaTypes.money_str) -> str:
     if "." not in s:
-        return f"{intToThai(int(s))}บาทถ้วน"
+        return f"{get_thai_number_text(int(s))}บาทถ้วน"
     
     _ = s.split(".")
-    return f"{intToThai(int(_[0]))}บาท{intToThai(int(_[1]))}สตางค์"
+    return f"{get_thai_number_text(int(_[0]))}บาท{get_thai_number_text(int(_[1]))}สตางค์"
 
-def get_duration_from_dates(start: airadaTypes.date_str, end: airadaTypes.date_str) -> str:
+def get_date_delta_thai_text(start: airadaTypes.date_str, end: airadaTypes.date_str) -> str:
     _start: datetime = datetime.fromisoformat(start)
     _end: datetime = datetime.fromisoformat(end)
-    _duration: datetime = _end - _start
-    return f"{_duration.days} วัน"
+    _delta: datetime = _end - _start
+    return f"{_delta.days} วัน"
 
-def intToThai(i: int) -> str:
+def get_thai_number_text(i: int) -> str:
     _nt: NumThai = NumThai()
     _: list[str] = _nt.NumberToTextThai(i)
     return "".join(_)
