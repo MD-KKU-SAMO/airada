@@ -1,26 +1,29 @@
 AIRADA_VERSION = "1.0.0"
 
 import logging
-import datetime
+from datetime import datetime
 
-from airadaCore import projectHandler, testUtils
+from airadaCore import projectHandler, testUtils, airadaTypes
 
-logger = logging.getLogger("airada")
+logger: logging.Logger = logging.getLogger("airada")
     
-def errorHandler():
+def error_handler():
     logger.info("Trowing error response to server.")
     # TODO add code
+    ...
 
-def main():
+def main() -> None:
     logging.basicConfig(filename="log/airada.log", level=logging.INFO)
-    logger.info(f"Started @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+    logger.info(f"Started @ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
     
     # Add fetching code here later
+    ...
+    
     try: 
-        rawData = testUtils.fetchData()
+        rawData: airadaTypes.JSON_data = testUtils.fetch_data()
     except:
-        logger.error(f"Cannot fetch JSON file @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
-        errorHandler()
+        logger.error(f"Cannot fetch JSON file @ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+        error_handler()
     else:
         logger.info("Successfully fetch JSON string, parsing...")
 
@@ -29,8 +32,8 @@ def main():
             try:
                 outputPath = projectHandler.handle(rawData)
             except:
-                logger.error(f"Got error signal from airadaCore/projectHandler @ {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
-                errorHandler()
+                logger.error(f"Got error signal from airadaCore/projectHandler @ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
+                error_handler()
             else:
                 logger.info(f"Output file at {outputPath}.")
         else:

@@ -1,9 +1,10 @@
 import json
 import logging
+import typing
 
 logger = logging.getLogger("airadaCore/testFunctions")
 
-def fetchData():
+def fetch_data():
     try:
         logger.info("Throwing test/project-paper.json data")
         with open("test/project-paper.json", "r") as f:
