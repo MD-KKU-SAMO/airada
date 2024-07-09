@@ -1,6 +1,5 @@
 import json
 import logging
-import typing
 
 logger = logging.getLogger("airadaCore/testFunctions")
 

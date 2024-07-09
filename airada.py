@@ -1,6 +1,7 @@
 AIRADA_VERSION = "1.0.0"
 
 import logging
+import time
 from datetime import datetime
 
 from airadaCore import projectHandler, testUtils, airadaTypes
@@ -18,7 +19,7 @@ def main() -> None:
     
     # Add fetching code here later
     ...
-    
+
     try: 
         rawData: airadaTypes.JSON_data = testUtils.fetch_data()
     except:
@@ -26,7 +27,7 @@ def main() -> None:
         error_handler()
     else:
         logger.info("Successfully fetch JSON string, parsing...")
-
+        
         if rawData["mode"] == "project-paper":
             logger.info("Using project mode. Invoking airada.projectHandler...")
             try:
@@ -38,7 +39,6 @@ def main() -> None:
                 logger.info(f"Output file at {outputPath}.")
         else:
             logger.error("UNSUPPORTED MODE DETECTED")
-
 
 if __name__ == "__main__":
     main()

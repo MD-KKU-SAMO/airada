@@ -51,5 +51,6 @@ def toThaiDate(date: airadaTypes.date_str) -> str:
 
     timeData: datetime = datetime.fromisoformat(date)
     thaiYear: int = timeData.year + 543
-    monthText: int = MONTH_TEXTS[timeData.month - 1]
+    monthText: str = MONTH_TEXTS[timeData.month - 1]
+    
     return f"{timeData.day} {monthText} {thaiYear}"
