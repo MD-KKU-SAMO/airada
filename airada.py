@@ -1,13 +1,11 @@
 AIRADA_VERSION = "1.0.0"
 
 import logging
-import time
 from datetime import datetime
 
 from airadaCore import projectHandler
 
 from airadaCore.airadaTypes import jsonData, Path
-from typing import NoReturn
 
 from airadaDebug import testUtils
 
@@ -18,7 +16,7 @@ def error_handler():
     # TODO add code
     ...
 
-def main() -> NoReturn:
+def main() -> None:
     logging.basicConfig(filename="log/airada.log", level=logging.INFO)
     logger.info(f"Started @ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
     

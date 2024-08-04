@@ -1,10 +1,19 @@
 import logging
+import time 
 
 import docx
-import docx.table
-import python_docx_replace
+from docx import (
+    table as _Table
+)
+from docx.table import _Row
+from docx.oxml.ns import qn
 
-from airadaCore import utils, airadaTypes
+from python_docx_replace import docx_replace
+
+from typing import Iterable, Any
+
+from airadaCore import utils
+from airadaCore.airadaTypes import Path, DateStr, MoneyStr, jsonData
 
 OUTPUT_PATH = "./output/out.docx"
 PROJECT_PAPER_TEMPLATE_PATH = './template/project-paper.docx'
@@ -12,8 +21,10 @@ PROJECT_PAPER_TEMPLATE_PATH = './template/project-paper.docx'
 STEP_TABLE_INDEX = 1
 BUDGET_TABLE_INDEX = 2
 OKR_TABLE_INDEX = 3
+ACTIVITY_CREDIT_TABLE_INDEX = 4
+SKILL_CREDIT_TABLE_INDEX = 5
 
-ENUMERATED_TOPICS = [
+ENUMERATED_TOPICS = (
     "rationale",
     "objective",
     "studentManager",
@@ -27,9 +38,9 @@ ENUMERATED_TOPICS = [
     "stepEndDate",
     "stepPeroid",
     "stepManager"
-]
+)
 
-NON_NUMERATED_TOPICS = [
+NON_NUMERATED_TOPICS = (
     "projectName",
 
     "councilManager",
@@ -48,11 +59,11 @@ NON_NUMERATED_TOPICS = [
 
     "budgetSum",
     "budgetSumText"
-]
+)
 
 logger: logging.Logger = logging.getLogger("airadaCore/projectHandler")
 
-def sum_budget(budgets: list[dict]) -> str:
+def sum_budget(budgets: list[dict]) -> MoneyStr:
     return utils.sum_money([budget["price"] for budget in budgets])
 
 def get_sub_placeholders_text(s: str, n:int) -> str:
@@ -61,44 +72,53 @@ def get_sub_placeholders_text(s: str, n:int) -> str:
 def get_student_manager_text(_: dict) -> str:
     return f"{_["name"]}\t{_["id"]}\t{_["role"]}"
 
-def get_coucil_manager_text(_:dict) -> str:
+def get_coucil_manager_text(_: dict) -> str:
     return f"{_["name"]}\t{_["role"]}"
 
-def add_rows_to_table(document: docx.Document, n: int, index: int, swap_last: bool = False) -> None:
-    for _ in range(n - 1):
-        new_row: docx.table._Row = document.tables[index].add_row()
-        for i in range(len(new_row.cells)):
-            new_row.cells[i].text = document.tables[index].rows[1].cells[i].text.replace('#', str(_ + 1))
-            new_row.cells[i].paragraphs[0].style='tableStyleProjectPaperAirada'
-        
+def get_numbered_list_texts_subkeys(container: Iterable[dict[str, str]], key: Any) -> list[str]:
+    return [utils.get_numbered_list_text(i, text=_[key]) for i, _ in enumerate(container, 1)]
+
+
+def duplicate_last_row(n_row: int, table: _Table, swap_last: bool = False) -> None:
+    for _ in range(n_row - 1):
+        new_row: _Row = table.add_row()
+
+        for cell, template_cell in zip(new_row.cells, table.rows[1].cells):
+            cell.text = template_cell.text
+
         if (swap_last):
-            document.tables[index].rows[-3]._tr.addnext(new_row._tr) # swap to before last position
+            table.rows[-3]._tr.addnext(new_row._tr) # swap to before last position
 
-    for cell in document.tables[index].rows[1].cells:
-        cell.text = cell.text.replace("#", "0")
-        cell.paragraphs[0].style='tableStyleProjectPaperAirada'
+    # i starts at -1 to ignore header row
+    for i, row in enumerate(table.rows, -1):
+        for cell in row.cells:
+            cell.text = cell.text.replace("#", str(i))
+            cell.paragraphs[0].style='tableStyleProjectPaperAirada'
 
-def replace_placeholders(document: docx.Document, data: airadaTypes.JSON_data) -> None:
+
+def replace_placeholders(document: docx.Document, data: jsonData) -> None:
     # Non-numerated placeholders
     _: dict[str, str] = {e: data[e] for e in NON_NUMERATED_TOPICS}
     
     # Enumerated placeholders
     for topic in ENUMERATED_TOPICS:
-        _.update({f"{topic} {i}": data[f"{topic}s"][i] for i in range(len(data[f"{topic}s"]))})
-    python_docx_replace.docx_replace(document, **_)
+        _.update({f"{topic} {i}": content for i, content in enumerate(data[f"{topic}s"])})
+        
+    docx_replace(document, **_)
 
-def place_paragraphs_placeholders(document: docx.Document, data: airadaTypes.JSON_data) -> None:
+def place_paragraphs_placeholders(document: docx.Document, data: jsonData) -> None:
     _: dict[str, str] = {
         f"{e}s": get_sub_placeholders_text(e, len(data[f"{e}s"])) for e in ENUMERATED_TOPICS
     }
-    python_docx_replace.docx_replace(document, **_)
+    docx_replace(document, **_)
 
-def place_tables_placeholders(document: docx.Document, data: airadaTypes.JSON_data) -> None:
-    add_rows_to_table(document, len(data["steps"]), STEP_TABLE_INDEX)
-    add_rows_to_table(document, len(data["consequencesOKRs"]), OKR_TABLE_INDEX)
-    add_rows_to_table(document, len(data["budgetItems"]), BUDGET_TABLE_INDEX, swap_last=True)
+def place_tables_placeholders(document: docx.Document, data: jsonData) -> None:
+    duplicate_last_row(len(data["steps"]), document.tables[STEP_TABLE_INDEX])
+    duplicate_last_row(len(data["consequencesOKRs"]), document.tables[OKR_TABLE_INDEX])
+    duplicate_last_row(len(data["budgetItems"]), document.tables[BUDGET_TABLE_INDEX], swap_last=True)
+    
 
-def process_data(data: airadaTypes.JSON_data) -> airadaTypes.JSON_data:
+def process_data(data: jsonData) -> dict[str, str]:
     # simple copy from original date
     SIMPLE_COPY_KEYS = [
         "projectName", "rationales", "objectives", 
@@ -107,18 +127,15 @@ def process_data(data: airadaTypes.JSON_data) -> airadaTypes.JSON_data:
         "locations",
         "ratingForm"
     ]
-    processed_data: airadaTypes.JSON_data = {k: data[k] for k in SIMPLE_COPY_KEYS}
+    
+    processed_data: dict[str, Any] = {k: data[k] for k in SIMPLE_COPY_KEYS}
 
     # data which need processing
-    budgets_size: int = len(data["budgets"])
-    budget_prices: list[airadaTypes.money_str] = [data["budgets"][_]["price"] for _ in range(budgets_size)]
-    budget_sum: airadaTypes.money_str = utils.sum_money_str(budget_prices)
+    budget_prices: list[MoneyStr] = [_["price"] for _ in data["budgets"]]
+    budget_sum: MoneyStr = utils.sum_money_str(budget_prices)
 
-    consequences_size: int = len(data["consequences"])
-
-    step_size: int = len(data["steps"])
-    step_start_dates: list[airadaTypes.date_str] = [data["steps"][i]["startDate"] for i in range(step_size)]
-    step_end_dates: list[airadaTypes.date_str] = [data["steps"][i]["endDate"] for i in range(step_size)]
+    step_start_dates: list[DateStr] = [_["startDate"] for _ in data["steps"]]
+    step_end_dates: list[DateStr] = [_["endDate"] for _ in data["steps"]]
 
     processed_data.update({
         "nSum":             sum(data[_] for _ in ["nProfessor", "nStaff", "nStudent", "nExternal"]),
@@ -129,15 +146,15 @@ def process_data(data: airadaTypes.JSON_data) -> airadaTypes.JSON_data:
         "councilManager":   get_coucil_manager_text(data["studentCouncilManager"]),
         "studentManagers":  list(map(get_student_manager_text, data["studentManagers"])),
 
-        "budgetItems":      [utils.get_numbered_list_text(i+1, text=data["budgets"][i]["item"]) for i in range(budgets_size)],
+        "budgetItems":      get_numbered_list_texts_subkeys(data["budgets"], "item"),
         "budgetPrices":     budget_prices,
         "budgetSum":        budget_sum,
         "budgetSumText":    utils.get_money_thai_text(budget_sum),
 
-        "consequencesOKRs": [utils.get_numbered_list_text(i+1, text=data["consequences"][i]["OKR"]) for i in range(consequences_size)],
-        "consequencesKPIs": [data["consequences"][i]["KPI"] for i in range(len(data["consequences"]))],
+        "consequencesOKRs": get_numbered_list_texts_subkeys(data["consequences"], "OKR"),
+        "consequencesKPIs": [_["KPI"] for _ in data["consequences"]],
 
-        "steps":            [utils.get_numbered_list_text(i+1, text=data["steps"][i]["step"]) for i in range(step_size)],
+        "steps":            get_numbered_list_texts_subkeys(data["steps"], "step"),
         "stepStartDates":   step_start_dates,
         "stepEndDates":     step_end_dates,
         "stepPeroids":      list(map(utils.get_date_delta_thai_text, step_start_dates, step_end_dates)),
@@ -147,7 +164,7 @@ def process_data(data: airadaTypes.JSON_data) -> airadaTypes.JSON_data:
     # TODO "mostExpectedSkill",  "activityCredits", "skillCredits", "programmes"
     return processed_data
 
-def handle(data: airadaTypes.JSON_data) -> airadaTypes.path:
+def handle(data: jsonData) -> Path:
     logger.info(f"Output path set to {OUTPUT_PATH}")
     logger.info(f"Template path set to {PROJECT_PAPER_TEMPLATE_PATH}")
     
@@ -157,14 +174,25 @@ def handle(data: airadaTypes.JSON_data) -> airadaTypes.path:
     # open copied document
     document: docx.Document = docx.Document(OUTPUT_PATH)
 
+    # doc_elm = document._element
+    # checkBoxes = doc_elm.xpath('.//w14:checkbox')
+
+    # for row in document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows:
+    #     for cell in row.cells:
+    #         x = cell._element.xpath('.//w14:checkbox/w14:checked')
+    #         if x:
+    #             x[0].set(qn('w14:val'), "1")
+
+    
     # process raw JSON data
-    processed_data: airadaTypes.JSON_data = process_data(data)
+    processed_data: jsonData = process_data(data)
+
 
     place_paragraphs_placeholders(document, processed_data)
     place_tables_placeholders(document, processed_data)
-
     replace_placeholders(document, processed_data)
     
     document.save(OUTPUT_PATH)
+    
     
     return OUTPUT_PATH
