@@ -102,8 +102,7 @@ def duplicate_last_row(n_row: int, table: _Table, swap_last: bool = False) -> No
         if (swap_last):
             table.rows[-3]._tr.addnext(new_row._tr) # swap to before last position
 
-    # i starts at -1 to ignore header row
-    for i, row in enumerate(table.rows, -1):
+    for i, row in enumerate(table.rows[1:]):
         for cell in row.cells:
             cell.text = cell.text.replace("#", str(i))
             cell.paragraphs[0].style='tableStyleProjectPaperAirada'
