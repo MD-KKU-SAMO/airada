@@ -79,6 +79,14 @@ def get_numbered_list_texts_subkeys(container: Iterable[dict[str, str]], key: An
     return [utils.get_numbered_list_text(i, text=_[key]) for i, _ in enumerate(container, 1)]
 
 
+def check_checkbox(answers: list[dict[str, bool]], checkables):
+    for answer, checkable in zip(answers, checkables):
+        for _ in (("organizer", 0), ("participant", 1)):
+            if answer[_[0]]:
+                checkable.cells[_[1]].text = "☒"
+                checkable.cells[_[1]].paragraphs[0].style='airadaChecklistTable'
+
+
 def duplicate_last_row(n_row: int, table: _Table, swap_last: bool = False) -> None:
     for _ in range(n_row - 1):
         new_row: _Row = table.add_row()
@@ -96,7 +104,7 @@ def duplicate_last_row(n_row: int, table: _Table, swap_last: bool = False) -> No
             cell.paragraphs[0].style='tableStyleProjectPaperAirada'
 
 
-def replace_placeholders(document: docx.Document, data: jsonData) -> None:
+def replace_placeholders(document: docx.Document, data: dict[str, Any]) -> None:
     # Non-numerated placeholders
     _: dict[str, str] = {e: data[e] for e in NON_NUMERATED_TOPICS}
     
@@ -116,7 +124,15 @@ def place_tables_placeholders(document: docx.Document, data: jsonData) -> None:
     duplicate_last_row(len(data["steps"]), document.tables[STEP_TABLE_INDEX])
     duplicate_last_row(len(data["consequencesOKRs"]), document.tables[OKR_TABLE_INDEX])
     duplicate_last_row(len(data["budgetItems"]), document.tables[BUDGET_TABLE_INDEX], swap_last=True)
-    
+
+def check_checkboxs(document: docx.Document, data):
+    activity_clickatbles = document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows[3:6] + \
+                           document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows[7:11] + \
+                           document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows[12:]
+    check_checkbox(data["activityCredits"], activity_clickatbles)
+
+    credit_clickatbles = document.tables[SKILL_CREDIT_TABLE_INDEX].rows[2:]
+    check_checkbox(data["skillCredits"], credit_clickatbles)
 
 def process_data(data: jsonData) -> dict[str, str]:
     # simple copy from original date
@@ -125,7 +141,8 @@ def process_data(data: jsonData) -> dict[str, str]:
         "contentAdvisor", "technicalAdvisor",
         "nProfessor", "nStaff", "nStudent", "nExternal",
         "locations",
-        "ratingForm"
+        "ratingForm",
+        "activityCredits", "skillCredits"
     ]
     
     processed_data: dict[str, Any] = {k: data[k] for k in SIMPLE_COPY_KEYS}
@@ -161,7 +178,7 @@ def process_data(data: jsonData) -> dict[str, str]:
         "stepManagers":     [data["steps"][i]["manager"] for i in range(len(data["steps"]))]
     })
 
-    # TODO "mostExpectedSkill",  "activityCredits", "skillCredits", "programmes"
+    # TODO "mostExpectedSkill", "programmes"
     return processed_data
 
 def handle(data: jsonData) -> Path:
@@ -174,22 +191,12 @@ def handle(data: jsonData) -> Path:
     # open copied document
     document: docx.Document = docx.Document(OUTPUT_PATH)
 
-    # doc_elm = document._element
-    # checkBoxes = doc_elm.xpath('.//w14:checkbox')
-
-    # for row in document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows:
-    #     for cell in row.cells:
-    #         x = cell._element.xpath('.//w14:checkbox/w14:checked')
-    #         if x:
-    #             x[0].set(qn('w14:val'), "1")
-
-    
     # process raw JSON data
     processed_data: jsonData = process_data(data)
 
-
     place_paragraphs_placeholders(document, processed_data)
     place_tables_placeholders(document, processed_data)
+    check_checkboxs(document, processed_data)
     replace_placeholders(document, processed_data)
     
     document.save(OUTPUT_PATH)
