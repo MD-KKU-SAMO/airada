@@ -63,17 +63,22 @@ NON_NUMERATED_TOPICS = (
 
 logger: logging.Logger = logging.getLogger("airadaCore/projectHandler")
 
+
 def sum_budget(budgets: list[dict]) -> MoneyStr:
     return utils.sum_money([budget["price"] for budget in budgets])
+
 
 def get_sub_placeholders_text(s: str, n:int) -> str:
     return "\n\t".join([f"${{{s} {i}}}" for i in range(n)])
 
+
 def get_student_manager_text(_: dict) -> str:
     return f"{_["name"]}\t{_["id"]}\t{_["role"]}"
 
+
 def get_coucil_manager_text(_: dict) -> str:
     return f"{_["name"]}\t{_["role"]}"
+
 
 def get_numbered_list_texts_subkeys(container: Iterable[dict[str, str]], key: Any) -> list[str]:
     return [utils.get_numbered_list_text(i, text=_[key]) for i, _ in enumerate(container, 1)]
@@ -114,18 +119,21 @@ def replace_placeholders(document: docx.Document, data: dict[str, Any]) -> None:
         
     docx_replace(document, **_)
 
-def place_paragraphs_placeholders(document: docx.Document, data: jsonData) -> None:
+
+def place_paragraphs_placeholders(document: docx.Document, data: dict[str, Any]) -> None:
     _: dict[str, str] = {
         f"{e}s": get_sub_placeholders_text(e, len(data[f"{e}s"])) for e in ENUMERATED_TOPICS
     }
     docx_replace(document, **_)
 
-def place_tables_placeholders(document: docx.Document, data: jsonData) -> None:
+
+def place_tables_placeholders(document: docx.Document, data: dict[str, Any]) -> None:
     duplicate_last_row(len(data["steps"]), document.tables[STEP_TABLE_INDEX])
     duplicate_last_row(len(data["consequencesOKRs"]), document.tables[OKR_TABLE_INDEX])
     duplicate_last_row(len(data["budgetItems"]), document.tables[BUDGET_TABLE_INDEX], swap_last=True)
 
-def check_checkboxs(document: docx.Document, data):
+
+def check_checkboxs(document: docx.Document, data: dict[str, Any]):
     activity_clickatbles = document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows[3:6] + \
                            document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows[7:11] + \
                            document.tables[ACTIVITY_CREDIT_TABLE_INDEX].rows[12:]
@@ -134,7 +142,8 @@ def check_checkboxs(document: docx.Document, data):
     credit_clickatbles = document.tables[SKILL_CREDIT_TABLE_INDEX].rows[2:]
     check_checkbox(data["skillCredits"], credit_clickatbles)
 
-def process_data(data: jsonData) -> dict[str, str]:
+
+def process_data(data: jsonData) -> dict[str, Any]:
     # simple copy from original date
     SIMPLE_COPY_KEYS = [
         "projectName", "rationales", "objectives", 
@@ -200,6 +209,5 @@ def handle(data: jsonData) -> Path:
     replace_placeholders(document, processed_data)
     
     document.save(OUTPUT_PATH)
-    
     
     return OUTPUT_PATH
