@@ -211,8 +211,5 @@
             "participant": true
         }
     ],
-    "mostExpectedSkill" : { 
-        "organizer": 1, 
-        "participant": 2 
-    } 
+    "mostExpectedSkill" : 1
 }
