@@ -76,15 +76,17 @@ def get_coucil_manager_text(_: dict) -> str:
     return f"{_["name"]}\t{_["role"]}"
 
 
-def check_credit_table(answers: list[dict[str, bool]], table: Table) -> None:
+def check_credit_table(answers: list[dict[str, bool]], table: Table) -> tuple[_Row]:
     # Filter only row with templated blank checkbox ☐
-    checkables = (row for row in table.rows if row.cells[0].text == "☐")
+    checkables = tuple(row for row in table.rows if row.cells[0].text == "☐")
 
     for answer, checkable in zip(answers, checkables):
         for i, key in enumerate(("organizer", "participant")):
             if answer[key]:
-                checkable.cells[i].text = "☒" if answer[key] else "☐"
+                checkable.cells[i].text = "☒"
                 checkable.cells[i].paragraphs[0].style='airadaChecklistTable'
+    
+    return checkables
 
 
 def add_tabel_placeholders(n_row: int, table: Table, swap_last: bool = False) -> None:
@@ -132,9 +134,13 @@ def prepare_tables(tables: list[Table], data: dict[str, Any]) -> None:
     add_tabel_placeholders(len(data["budgetItems"]), tables[BUDGET_TABLE_INDEX], swap_last=True)
 
 
-def check_credit_tables(tables: Iterable[Table], data: dict[str, Any]):
-    check_credit_table(data["activityCredits"], tables[ACTIVITY_CREDIT_TABLE_INDEX])
-    check_credit_table(data["skillCredits"], tables[SKILL_CREDIT_TABLE_INDEX])
+def handle_credit_section(document: docx.Document, data: dict[str, Any]):
+    check_credit_table(data["activityCredits"], document.tables[ACTIVITY_CREDIT_TABLE_INDEX])
+    skill_rows: tuple[_Row] = check_credit_table(data["skillCredits"], document.tables[SKILL_CREDIT_TABLE_INDEX])
+    
+    _text = skill_rows[data["mostExpectedSkill"]].cells[2].text.replace("\xa0\n", "")
+    
+    docx_replace(document, mostExpectedSkill=_text)
 
 
 def process_data(data: jsonData) -> dict[str, Any]:
@@ -145,7 +151,7 @@ def process_data(data: jsonData) -> dict[str, Any]:
         "nProfessor", "nStaff", "nStudent", "nExternal",
         "locations",
         "ratingForm",
-        "activityCredits", "skillCredits"
+        "activityCredits", "skillCredits", "mostExpectedSkill"
     )
     processed_data: dict[str, Any] = {k: data[k] for k in SIMPLE_COPY_KEYS}
 
@@ -174,7 +180,7 @@ def process_data(data: jsonData) -> dict[str, Any]:
         "stepManagers":     utils.get_each("manager", data["steps"])
     })
 
-    # TODO "mostExpectedSkill", "programmes"
+    # TODO "programmes"
     return processed_data
 
 
@@ -194,7 +200,8 @@ def handle(data: jsonData) -> Path:
     prepare_paragraphs(document, processed_data)
     prepare_tables(document.tables, processed_data)
     
-    check_credit_tables(document.tables, processed_data)
+    # credit section are handled separately as its structure was different 
+    handle_credit_section(document, processed_data)
     replace_placeholders(document, processed_data)
     
     document.save(OUTPUT_PATH)
