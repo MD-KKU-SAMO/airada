@@ -35,9 +35,7 @@
     "nStaff": 2,
     "nStudent": 5,
     "nExternal": 3,
-    "locations": [
-        "ทะเลอ่าวไทย อำเภอสัตตาหับ จังหวัดระยอง"
-    ],
+    "location": "ทะเลอ่าวไทย อำเภอสัตตาหับ จังหวัดระยอง",
     "periodStartDate": "2024-10-21",
     "periodEndDate": "2025-05-25",
     "steps": [
