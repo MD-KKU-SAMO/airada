@@ -7,12 +7,12 @@ from docx.table import (
 
 from python_docx_replace import docx_replace
 
-from typing import Any, Iterable
+from typing import Any
 
 from airadaCore import utils
 
 from airadaCore.airadaTypes import (
-    Path, jsonData
+    Path, jsonData, MoneyStr
 )
 
 OUTPUT_PATH = "./output/out.docx"
@@ -28,7 +28,6 @@ ENUMERATED_TOPICS = (
     "rationale",
     "objective",
     "studentManager",
-    "location",
     "budgetItem",
     "budgetPrice",
     "consequencesOKR",
@@ -53,7 +52,8 @@ NON_NUMERATED_TOPICS = (
     "nStudent",
     "nExternal",
     "nSum",
-
+    
+    "location",
     "periodStartDate",
     "periodEndDate",
 
@@ -64,7 +64,7 @@ NON_NUMERATED_TOPICS = (
 logger: logging.Logger = logging.getLogger("airadaCore/projectHandler")
 
 
-def get_sub_placeholders_text(s: str, n:int) -> str:
+def get_sub_placeholders_text(s: str, n: int) -> str:
     return "\n\t".join([f"${{{s} {i}}}" for i in range(n)])
 
 
@@ -76,10 +76,11 @@ def get_coucil_manager_text(_: dict) -> str:
     return f"{_["name"]}\t{_["role"]}"
 
 
-def check_credit_table(answers: list[dict[str, bool]], table: Table) -> tuple[_Row]:
-    # Filter only row with templated blank checkbox ☐
-    checkables = tuple(row for row in table.rows if row.cells[0].text == "☐")
+def get_clickables(table: Table) -> tuple[_Row]:
+    return tuple(row for row in table.rows if row.cells[0].text == "☐")
 
+
+def check_credit_table(answers: list[dict[str, bool]], checkables: list[_Row]) -> tuple[_Row]:
     for answer, checkable in zip(answers, checkables):
         for i, key in enumerate(("organizer", "participant")):
             if answer[key]:
@@ -99,21 +100,24 @@ def add_tabel_placeholders(n_row: int, table: Table, swap_last: bool = False) ->
             cell.text = template_cell.text
 
         # Swap to before last position. Primary used in budget table
-        if (swap_last):
+        if (swap_last): 
             table.rows[-3]._tr.addnext(new_row._tr)
 
+    # if swap_last == True → skip formatting last row
+    rows = table.rows[1:-1] if swap_last else table.rows[1:]
+    
     # [1:] to skip header row
-    for i, row in enumerate(table.rows[1:]):
+    for i, row in enumerate(rows) :
         for cell in row.cells:
             cell.text = cell.text.replace("#", str(i))
             cell.paragraphs[0].style ='tableStyleProjectPaperAirada'
 
 
 def replace_placeholders(document: docx.Document, data: dict[str, Any]) -> None:
-    # Non-numerated placeholders
+    # Non-numerated placeholders is simply replaced
     _: dict[str, str] = {e: data[e] for e in NON_NUMERATED_TOPICS}
     
-    # Enumerated placeholders
+    # Enumerated placeholders. Placeholder index starts at 0.
     for topic in ENUMERATED_TOPICS:
         _.update({f"{topic} {i}": content for i, content in enumerate(data[f"{topic}s"])})
 
@@ -134,13 +138,16 @@ def prepare_tables(tables: list[Table], data: dict[str, Any]) -> None:
     add_tabel_placeholders(len(data["budgetItems"]), tables[BUDGET_TABLE_INDEX], swap_last=True)
 
 
-def handle_credit_section(document: docx.Document, data: dict[str, Any]):
-    check_credit_table(data["activityCredits"], document.tables[ACTIVITY_CREDIT_TABLE_INDEX])
-    skill_rows: tuple[_Row] = check_credit_table(data["skillCredits"], document.tables[SKILL_CREDIT_TABLE_INDEX])
+def handle_credit_section(document: docx.Document, data: dict[str, Any]) -> None:
+    # Filter only row with templated blank checkbox ☐
+    activity_checkables: tuple[_Row] = get_clickables(document.tables[ACTIVITY_CREDIT_TABLE_INDEX])
+    check_credit_table(data["activityCredits"], activity_checkables)
     
-    _text = skill_rows[data["mostExpectedSkill"]].cells[2].text.replace("\xa0\n", "")
+    skill_checkables: tuple[_Row] = get_clickables(document.tables[SKILL_CREDIT_TABLE_INDEX])
+    check_credit_table(data["skillCredits"], skill_checkables)
     
-    docx_replace(document, mostExpectedSkill=_text)
+    most_expected_text = skill_checkables[data["mostExpectedSkill"]].cells[2].text.replace("\xa0\n", "")
+    docx_replace(document, mostExpectedSkill=most_expected_text)
 
 
 def process_data(data: jsonData) -> dict[str, Any]:
@@ -149,14 +156,13 @@ def process_data(data: jsonData) -> dict[str, Any]:
         "projectName", "rationales", "objectives", 
         "contentAdvisor", "technicalAdvisor",
         "nProfessor", "nStaff", "nStudent", "nExternal",
-        "locations",
+        "location",
         "ratingForm",
-        "activityCredits", "skillCredits", "mostExpectedSkill"
     )
-    processed_data: dict[str, Any] = {k: data[k] for k in SIMPLE_COPY_KEYS}
+    processed_data: dict[str, str|tuple] = {k: data[k] for k in SIMPLE_COPY_KEYS}
 
     processed_data.update({
-        "nSum":             sum(data[_] for _ in ("nProfessor", "nStaff", "nStudent", "nExternal")),
+        "nSum":             str(sum(data[_] for _ in ("nProfessor", "nStaff", "nStudent", "nExternal"))),
         
         "periodStartDate":  utils.toThaiDate(data["periodStartDate"]),
         "periodEndDate":    utils.toThaiDate(data["periodEndDate"]),
@@ -193,6 +199,9 @@ def handle(data: jsonData) -> Path:
 
     # open copied document
     document: docx.Document = docx.Document(OUTPUT_PATH)
+    
+    # credit section are handled separately for simplicity
+    handle_credit_section(document, data)
 
     # process raw JSON data
     processed_data: jsonData = process_data(data) 
@@ -200,8 +209,6 @@ def handle(data: jsonData) -> Path:
     prepare_paragraphs(document, processed_data)
     prepare_tables(document.tables, processed_data)
     
-    # credit section are handled separately as its structure was different 
-    handle_credit_section(document, processed_data)
     replace_placeholders(document, processed_data)
     
     document.save(OUTPUT_PATH)
