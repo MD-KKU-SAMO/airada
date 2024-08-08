@@ -7,7 +7,7 @@ from typing import Iterable, Any
 from airadaCore.airadaTypes import MoneyStr, DateStr
 
 
-def get_each(key, container) -> tuple[Any]: 
+def get_each(key, container) -> tuple[Any]:
     return tuple(_[key] for _ in container)
 
 
@@ -16,7 +16,7 @@ def to_numbered_list(container: Iterable[Iterable[str]]) -> tuple[str]:
 
 
 def each_to_numbered_list(key: Any, container: Iterable[Iterable[str]]) -> tuple[str]:
-    return to_numbered_list(get_each(key, container)) 
+    return to_numbered_list(get_each(key, container))
 
 
 def get_numbered_list_text(*i: int, text: str) -> str:
@@ -34,7 +34,7 @@ def sum_money_str(items: list[MoneyStr]) -> MoneyStr:
 def get_money_thai_text(s: MoneyStr) -> str:
     if "." not in s:
         return f"{get_thai_number_text(int(s))}บาทถ้วน"
-    
+
     _ = s.split(".")
     return f"{get_thai_number_text(int(_[0]))}บาท{get_thai_number_text(int(_[1]))}สตางค์"
 
@@ -65,11 +65,11 @@ def toThaiDate(date: DateStr) -> str:
         "กันยายน",
         "ตุลาคม",
         "พฤศจิกายน",
-        "ธันวาคม"
+        "ธันวาคม",
     )
 
     _timeData: datetime = datetime.fromisoformat(date)
     _monthText: str = _MONTH_TEXTS[_timeData.month - 1]
     _thaiYear: int = _timeData.year + 543
-    
+
     return f"{_timeData.day} {_monthText} {_thaiYear}"
